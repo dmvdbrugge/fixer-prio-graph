@@ -1,0 +1,23 @@
+{
+    "name": "dmvdbrugge/fixer-prio-graph",
+    "description": "Build a priority graph for PHP-CS-Fixer's fixers",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dave van der Brugge",
+            "email": "dmvdbrugge@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "friendsofphp/php-cs-fixer": "dev-master",
+        "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1",
+        "graphp/graphviz": "^0.2.1"
+    }
+}
