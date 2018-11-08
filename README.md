@@ -3,7 +3,7 @@ Build a priority graph for [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS
 
 ## The Graph
 (Click for full-size image)
-[![The Graph](graphs/95e2be76e9-thumb.png "The Graph")](graphs/95e2be76e9.png?raw=true)
+[![The Graph](graphs/da6e53e676-thumb.png "The Graph")](graphs/da6e53e676.png?raw=true)
 
 ## Explanation
 PHP-CS-Fixer has rules, implemented as _fixers_. Those fixers (can) have a priority, to determine which fixer has to run
