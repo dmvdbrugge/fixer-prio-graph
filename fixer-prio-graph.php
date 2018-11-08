@@ -3,7 +3,13 @@
 use Fhaculty\Graph\Graph;
 use Fhaculty\Graph\Vertex;
 use Graphp\GraphViz\GraphViz;
+use PhpCsFixer\Fixer\Comment\CommentToPhpdocFixer;
 use PhpCsFixer\Fixer\FixerInterface;
+use PhpCsFixer\Fixer\Phpdoc\AlignMultilineCommentFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocIndentFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocScalarFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocToCommentFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use PhpCsFixer\FixerFactory;
 use PhpCsFixer\Tests\AutoReview\FixerFactoryTest;
 
@@ -31,13 +37,10 @@ $graph    = new Graph();
 $graph->setAttribute('graphviz.graph.rankdir', 'LR');
 
 // Ratio: height / width, stretch a little for readability
-$graph->setAttribute('graphviz.graph.ratio', 10 / 16);
+//$graph->setAttribute('graphviz.graph.ratio', 9 / 22); // Ultra-wide
+$graph->setAttribute('graphviz.graph.ratio', 10 / 16); // Normal wide screen
 
-/**
- * @var FixerInterface $higher
- * @var FixerInterface $lower
- */
-foreach ($factory->provideFixersPriorityCases() as [$higher, $lower]) {
+$addPriorityCase = function (FixerInterface $higher, FixerInterface $lower) use ($graph, &$vertices) {
     $nameHigher = $higher->getName();
     $nameLower  = $lower->getName();
 
@@ -51,8 +54,32 @@ foreach ($factory->provideFixersPriorityCases() as [$higher, $lower]) {
         $vertices[$nameLower]->setBalance($lower->getPriority());
     }
 
-    $edge = $vertices[$nameHigher]->createEdgeTo($vertices[$nameLower]);
-    $edge->setAttribute('graphviz.color', 'grey');
+    if (!$vertices[$nameHigher]->hasEdgeTo($vertices[$nameLower])) {
+        $edge = $vertices[$nameHigher]->createEdgeTo($vertices[$nameLower]);
+        $edge->setAttribute('graphviz.color', 'grey');
+    }
+};
+
+/**
+ * @var FixerInterface $higher
+ * @var FixerInterface $lower
+ */
+foreach ($factory->provideFixersPriorityCases() as [$higher, $lower]) {
+    $addPriorityCase($higher, $lower);
+}
+
+foreach ($factory->provideFixersPrioritySpecialPhpdocCases() as [$higher, $lower]) {
+    if (
+        ($higher instanceof AlignMultilineCommentFixer && !$lower instanceof CommentToPhpdocFixer)
+        || ($higher instanceof CommentToPhpdocFixer && !$lower instanceof PhpdocToCommentFixer)
+        || ($higher instanceof PhpdocToCommentFixer && !$lower instanceof PhpdocIndentFixer)
+        || ($higher instanceof PhpdocIndentFixer && !$lower instanceof PhpdocTypesFixer)
+        || ($higher instanceof PhpdocTypesFixer && !$lower instanceof PhpdocScalarFixer)
+    ) {
+        continue;
+    }
+
+    $addPriorityCase($higher, $lower);
 }
 
 $graphViz = new GraphViz();
