@@ -32,4 +32,4 @@ It depends on [Graphviz](http://www.graphviz.org/) to generate the image, for in
 ## License
 MIT License
 
-Copyright (c) 2018 Dave van der Brugge
+Copyright (c) 2018-2019 Dave van der Brugge
